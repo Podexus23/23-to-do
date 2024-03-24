@@ -3,7 +3,65 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        width: 100%;
+      }
+
+      .main {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .form-elem {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
     <title>To-do App</title>
   </head>
-  <body></body>
+  <body>
+    <header class="header">
+      <h1 class="header-heading">TO-DO-SHKA</h1>
+    </header>
+    <main class="main">
+      <div class="add-task">
+        <form class="add-task-form" method="post">
+          <div class="task-decription form-elem">
+            <label for="task-description">Describe your task</label>
+            <textarea name="task-description" id="task-description"></textarea>
+          </div>
+          <button class="add-task-btn btn">add task</button>
+        </form>
+      </div>
+      <div class="to-do-tasks-list"></div>
+    </main>
+    <footer class="footer">
+      <div class="footer-info">
+        <div class="footer-info_year">2024</div>
+      </div>
+    </footer>
+  </body>
+  <script>
+    const form = document.querySelector(".add-task-form");
+    const tasksList = document.querySelector(".to-do-tasks-list");
+    function addTask(e) {
+      e.preventDefault();
+      const taskData = e.target[0].value;
+      const taskDiv = document.createElement("div");
+      taskDiv.classList.add("tasks-list_task");
+      taskDiv.textContent = taskData;
+      tasksList.append(taskDiv);
+      console.log(taskData);
+    }
+    form.addEventListener("submit", addTask);
+  </script>
 </html>
