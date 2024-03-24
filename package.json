@@ -1,0 +1,16 @@
+{
+  "name": "to-do",
+  "version": "1.0.0",
+  "description": "to-do app to works with diff techs",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "to-do",
+    "practise",
+    "frontdev"
+  ],
+  "author": "podexus23",
+  "license": "ISC"
+}
