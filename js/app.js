@@ -1,35 +1,35 @@
 import { makeElem } from "./helpers.js";
+import { getDataFromLocalStorage, updateLocalStorage } from "./localStorage.js";
 
+const tasks = [];
 const form = document.querySelector(".add-task-form");
 const tasksList = document.querySelector(".to-do-tasks-list");
 
 function removeTask(e) {
-  e.target.parentNode.parentNode.removeChild(e.target.parentNode);
+  const task = e.target.parentNode;
+  const taskText = task.querySelector(".tasks-list_task-text");
+  const index = tasks.findIndex((e) => e === taskText.textContent);
+  tasks.splice(index, 1);
+  task.parentNode.removeChild(e.target.parentNode);
+  updateLocalStorage(tasks);
 }
 
 function editTask(e) {
   const task = e.target.parentNode;
+  const taskText = task.querySelector(".tasks-list_task-text");
   const textArea = makeElem("textarea", "edit-elem");
   const editSaveBtn = makeElem("button", "edit-save-btn");
   editSaveBtn.textContent = "save";
 
-  function onEditSave(e) {
+  function onEditSave() {
     const data = textArea.value;
+    const index = tasks.findIndex((e) => e === taskText.textContent);
     task.removeChild(textArea);
     task.removeChild(editSaveBtn);
-    task.textContent = data;
+    taskText.textContent = data;
+    tasks[index] = data;
 
-    const taskRemoveBtn = makeElem("button", "tasks-list_remove-btn");
-    taskRemoveBtn.textContent = "x";
-    taskRemoveBtn.addEventListener("click", removeTask);
-
-    const taskEditBtn = makeElem("button", "tasks-list_edit-btn");
-    taskEditBtn.textContent = "edit";
-    taskEditBtn.addEventListener("click", editTask);
-
-    task.append(taskEditBtn);
-    task.append(taskRemoveBtn);
-
+    updateLocalStorage(tasks);
     editSaveBtn.removeEventListener("click", onEditSave);
   }
 
@@ -39,11 +39,13 @@ function editTask(e) {
 }
 
 function addTask(e) {
-  e.preventDefault();
-  const taskData = e.target[0].value;
+  if (typeof e !== "string") e.preventDefault();
+
+  const taskData = typeof e !== "string" ? e.target[0].value : e;
 
   const taskDiv = makeElem("div", "tasks-list_task");
-  taskDiv.textContent = taskData;
+  const taskText = makeElem("span", "tasks-list_task-text");
+  taskText.textContent = taskData;
 
   const taskRemoveBtn = makeElem("button", "tasks-list_remove-btn");
   taskRemoveBtn.textContent = "x";
@@ -53,32 +55,20 @@ function addTask(e) {
   taskEditBtn.textContent = "edit";
   taskEditBtn.addEventListener("click", editTask);
 
+  taskDiv.append(taskText);
   taskDiv.append(taskEditBtn);
   taskDiv.append(taskRemoveBtn);
   tasksList.append(taskDiv);
-}
 
-function addFakeTask(textData) {
-  const taskData = textData;
-
-  const taskDiv = makeElem("div", "tasks-list_task");
-  taskDiv.textContent = taskData;
-
-  const taskRemoveBtn = makeElem("button", "tasks-list_remove-btn");
-  taskRemoveBtn.textContent = "x";
-  taskRemoveBtn.addEventListener("click", removeTask);
-
-  const taskEditBtn = makeElem("button", "tasks-list_edit-btn");
-  taskEditBtn.textContent = "edit";
-  taskEditBtn.addEventListener("click", editTask);
-
-  taskDiv.append(taskEditBtn);
-  taskDiv.append(taskRemoveBtn);
-  tasksList.append(taskDiv);
+  tasks.push(taskData);
+  updateLocalStorage(tasks);
 }
 
 form.addEventListener("submit", addTask);
-addFakeTask("123");
-addFakeTask("asd123");
-addFakeTask("ajbgaioerbhizfbsitb");
-addFakeTask("--");
+// addTask("123");
+// addTask("asd123");
+// addTask("ajbgaioerbhizfbsitb");
+// addTask("--");
+
+console.log(tasks);
+getDataFromLocalStorage().forEach((task) => addTask(task));
