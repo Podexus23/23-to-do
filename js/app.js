@@ -1,6 +1,7 @@
 import { addTimeOnPage } from "./date.js";
 import { makeElem } from "./helpers.js";
 import { getDataFromLocalStorage, updateLocalStorage } from "./localStorage.js";
+import { getWeather } from "./weatherAPI.js";
 
 const tasks = [];
 const form = document.querySelector(".add-task-form");
@@ -68,3 +69,9 @@ function addTask(e) {
 form.addEventListener("submit", addTask);
 getDataFromLocalStorage().forEach((task) => addTask(task));
 addTimeOnPage();
+// getWeather();
+console.log(
+  navigator.geolocation.getCurrentPosition((pos) => {
+    console.log(pos);
+  })
+);

@@ -2,7 +2,7 @@ const key = "todoshka";
 
 export function getDataFromLocalStorage() {
   const data = localStorage.getItem(key);
-  console.log("data from local storage", data);
+  // console.log("data from local storage", data);
   return JSON.parse(data);
 }
 
