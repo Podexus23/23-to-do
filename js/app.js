@@ -1,3 +1,4 @@
+import { addTimeOnPage } from "./date.js";
 import { makeElem } from "./helpers.js";
 import { getDataFromLocalStorage, updateLocalStorage } from "./localStorage.js";
 
@@ -65,10 +66,5 @@ function addTask(e) {
 }
 
 form.addEventListener("submit", addTask);
-// addTask("123");
-// addTask("asd123");
-// addTask("ajbgaioerbhizfbsitb");
-// addTask("--");
-
-console.log(tasks);
 getDataFromLocalStorage().forEach((task) => addTask(task));
+addTimeOnPage();
