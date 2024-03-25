@@ -49,10 +49,13 @@ function addTask(e) {
   if (typeof e !== "string") e.preventDefault();
 
   const taskData = typeof e !== "string" ? e.target[0].value : e;
+  if (e.target) e.target[0].value = "";
 
   const taskDiv = makeElem("div", "tasks-list_task");
   const taskText = makeElem("span", "tasks-list_task-text");
   taskText.textContent = taskData;
+
+  const taskButtons = makeElem("div", "tasks-list_buttons");
 
   const taskRemoveBtn = makeElem("button", "tasks-list_remove-btn");
   taskRemoveBtn.textContent = "x";
@@ -63,8 +66,9 @@ function addTask(e) {
   taskEditBtn.addEventListener("click", editTask);
 
   taskDiv.append(taskText);
-  taskDiv.append(taskEditBtn);
-  taskDiv.append(taskRemoveBtn);
+  taskButtons.append(taskEditBtn);
+  taskButtons.append(taskRemoveBtn);
+  taskDiv.append(taskButtons);
   tasksList.append(taskDiv);
 
   tasks.push(taskData);
