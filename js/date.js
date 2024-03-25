@@ -16,7 +16,9 @@ function runTime() {
   if (dateData.getMinutes() !== dateDataObj.time.min) {
     dateDataObj.time.hours = dateData.getHours();
     dateDataObj.time.min = dateData.getMinutes();
-    let time = `${dateDataObj.time.hours}:${dateDataObj.time.min}`;
+    let time = `${dateDataObj.time.hours
+      .toString()
+      .padStart(2, 0)}:${dateDataObj.time.min.toString().padStart(2, 0)}`;
     dailyTime.textContent = time;
   }
 }
