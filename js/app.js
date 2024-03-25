@@ -1,6 +1,11 @@
+import { KEYS } from "../keys.js";
 import { addTimeOnPage } from "./date.js";
 import { makeElem } from "./helpers.js";
-import { getDataFromLocalStorage, updateLocalStorage } from "./localStorage.js";
+import {
+  getDataFromLocalStorage,
+  updateLocalCacheData,
+  updateLocalStorage,
+} from "./localStorage.js";
 import { getWeather } from "./weatherAPI.js";
 
 const tasks = [];
@@ -13,7 +18,7 @@ function removeTask(e) {
   const index = tasks.findIndex((e) => e === taskText.textContent);
   tasks.splice(index, 1);
   task.parentNode.removeChild(e.target.parentNode);
-  updateLocalStorage(tasks);
+  updateLocalStorage(tasks, KEYS.task.localStorageKey);
 }
 
 function editTask(e) {
@@ -31,7 +36,7 @@ function editTask(e) {
     taskText.textContent = data;
     tasks[index] = data;
 
-    updateLocalStorage(tasks);
+    updateLocalStorage(tasks, KEYS.task.localStorageKey);
     editSaveBtn.removeEventListener("click", onEditSave);
   }
 
@@ -63,15 +68,14 @@ function addTask(e) {
   tasksList.append(taskDiv);
 
   tasks.push(taskData);
-  updateLocalStorage(tasks);
+  updateLocalStorage(tasks, KEYS.task.localStorageKey);
 }
 
 form.addEventListener("submit", addTask);
-getDataFromLocalStorage().forEach((task) => addTask(task));
-addTimeOnPage();
-// getWeather();
-console.log(
-  navigator.geolocation.getCurrentPosition((pos) => {
-    console.log(pos);
-  })
+getDataFromLocalStorage(KEYS.task.localStorageKey).forEach((task) =>
+  addTask(task)
 );
+updateLocalCacheData("coords", ...getDataFromLocalStorage("todoCoords"));
+
+addTimeOnPage();
+getWeather();
