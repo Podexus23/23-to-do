@@ -13,16 +13,17 @@ const form = document.querySelector(".add-task-form");
 const tasksList = document.querySelector(".to-do-tasks-list");
 
 function removeTask(e) {
-  const task = e.target.parentNode;
+  const task = e.target.closest(".tasks-list_task");
   const taskText = task.querySelector(".tasks-list_task-text");
   const index = tasks.findIndex((e) => e === taskText.textContent);
+
   tasks.splice(index, 1);
-  task.parentNode.removeChild(e.target.parentNode);
+  task.parentNode.removeChild(task);
   updateLocalStorage(tasks, KEYS.task.localStorageKey);
 }
 
 function editTask(e) {
-  const task = e.target.parentNode;
+  const task = e.target.closest(".tasks-list_task");
   const taskText = task.querySelector(".tasks-list_task-text");
   const textArea = makeElem("textarea", "edit-elem");
   const editSaveBtn = makeElem("button", "edit-save-btn");
