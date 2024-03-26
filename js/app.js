@@ -80,7 +80,8 @@ form.addEventListener("submit", addTask);
 getDataFromLocalStorage(KEYS.task.localStorageKey).forEach((task) =>
   addTask(task)
 );
-updateLocalCacheData("coords", ...getDataFromLocalStorage("todoCoords"));
+if (getDataFromLocalStorage("todoCoords"))
+  updateLocalCacheData("coords", ...getDataFromLocalStorage("todoCoords"));
 
 addTimeOnPage();
 getWeather();

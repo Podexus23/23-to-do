@@ -42,9 +42,12 @@ export async function getWeather() {
   //if coords given
   //check if they are used in localStorage(make an array, with lat,lon data)
   const localCoords = getDataFromLocalStorage(KEYS.task.coordsData);
+  let placeData;
   if (localCoords) {
     //if yes, take the place and take data for that place
     console.log(localCoords);
+    //!
+    placeData = localCoords[0];
   } else {
     const getWeatherData = await fetch(cityURL);
     const weatherJson = await getWeatherData.json();
@@ -56,12 +59,42 @@ export async function getWeather() {
       lon,
     });
     updateLocalStorage(localCacheData.coords, KEYS.task.coordsData);
+    placeData = {
+      Key: weatherJson.Key,
+      name: weatherJson.EnglishName,
+      lat,
+      lon,
+    };
   }
   //if no, get city name, add this data to local storage and get data for that place
 
   //make time checker
   //if data has been taken less than 30min ago, use old data
   //else load new data and update time
+  const savedWeather = getDataFromLocalStorage(KEYS.task.weatherTime);
+  if (placeData && !savedWeather) {
+    console.log(placeData);
+    const weatheDataURL = `http://dataservice.accuweather.com/currentconditions/v1/${placeData["Key"]}?apikey=${KEYS.weather.accu}`;
+    const getWeatherData = await fetch(weatheDataURL);
+    const weatherJson = await getWeatherData.json();
+    updateLocalStorage(
+      { time: Date.now(), data: weatherJson },
+      KEYS.task.weatherTime
+    );
+  } else {
+    console.log(savedWeather);
+    const imgURL = `https://openweathermap.org/img/wn/10d@2x.png`;
+    const weatherImg = await fetch(imgURL);
+    const imgBlob = await weatherImg.blob();
+
+    const image = URL.createObjectURL(imgBlob);
+    const imageDoc = document.createElement("img");
+    imageDoc.src = image;
+
+    const body = document.querySelector(".daily-info-weather");
+    body.append(imageDoc);
+    console.log(weatherImg);
+  }
 
   //!later option with given city
 
@@ -75,15 +108,4 @@ export async function getWeather() {
   // const getWeatherData = await fetch(weatheDataURL);
   // const weatherJson = await getWeatherData.json();
   // console.log(weatherJson);
-
-  // navigator.geolocation.getCurrentPosition(async (pos) => {
-  //   console.log(pos);
-  //   lat = pos.coords.latitude;
-  //   lon = pos.coords.longitude;
-  //   console.log(lat, lon);
-  //   cityURL += `${lat},${lon}`;
-  //   const getWeatherData = await fetch(cityURL);
-  //   const weatherJson = await getWeatherData.json();
-  //   console.log(weatherJson);
-  // });
 }
