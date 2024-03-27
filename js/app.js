@@ -1,5 +1,5 @@
 import { KEYS } from "../keys.js";
-import { addTimeOnPage } from "./date.js";
+import { addTimeOnPage, getHoursAndMinutes } from "./date.js";
 import { makeElem } from "./helpers.js";
 import {
   getDataFromLocalStorage,
@@ -8,18 +8,18 @@ import {
 } from "./localStorage.js";
 import { getWeather } from "./weatherAPI.js";
 
-const tasks = [];
+const tasksContainer = [];
 const form = document.querySelector(".add-task-form");
 const tasksList = document.querySelector(".to-do-tasks-list");
 
 function removeTask(e) {
   const task = e.target.closest(".tasks-list_task");
   const taskText = task.querySelector(".tasks-list_task-text");
-  const index = tasks.findIndex((e) => e === taskText.textContent);
+  const index = tasksContainer.findIndex((e) => e === taskText.textContent);
 
-  tasks.splice(index, 1);
+  tasksContainer.splice(index, 1);
   task.parentNode.removeChild(task);
-  updateLocalStorage(tasks, KEYS.task.localStorageKey);
+  updateLocalStorage(tasksContainer, KEYS.task.localStorageKey);
 }
 
 function editTask(e) {
@@ -31,13 +31,13 @@ function editTask(e) {
 
   function onEditSave() {
     const data = textArea.value;
-    const index = tasks.findIndex((e) => e === taskText.textContent);
+    const index = tasksContainer.findIndex((e) => e === taskText.textContent);
     task.removeChild(textArea);
     task.removeChild(editSaveBtn);
     taskText.textContent = data;
-    tasks[index] = data;
+    tasksContainer[index] = data;
 
-    updateLocalStorage(tasks, KEYS.task.localStorageKey);
+    updateLocalStorage(tasksContainer, KEYS.task.localStorageKey);
     editSaveBtn.removeEventListener("click", onEditSave);
   }
 
@@ -47,14 +47,23 @@ function editTask(e) {
 }
 
 function addTask(e) {
-  if (typeof e !== "string") e.preventDefault();
+  if (typeof e.data !== "string") e.preventDefault();
 
-  const taskData = typeof e !== "string" ? e.target[0].value : e;
+  // const taskData = typeof e !== "string" ? e.target[0].value : e;
+  const task = {
+    time: e.time ? e.time : Date.now(),
+    data: typeof e.data !== "string" ? e.target[0].value : e.data,
+  };
   if (e.target) e.target[0].value = "";
+
+  console.log(task);
+
+  const taskTime = makeElem("div", "tasks-list_time");
+  taskTime.textContent = `${getHoursAndMinutes(task.time)}`;
 
   const taskDiv = makeElem("div", "tasks-list_task");
   const taskText = makeElem("span", "tasks-list_task-text");
-  taskText.textContent = taskData;
+  taskText.textContent = `${task.data}`;
 
   const taskButtons = makeElem("div", "tasks-list_buttons");
 
@@ -66,17 +75,19 @@ function addTask(e) {
   taskEditBtn.textContent = "edit";
   taskEditBtn.addEventListener("click", editTask);
 
+  taskDiv.append(taskTime);
   taskDiv.append(taskText);
   taskButtons.append(taskEditBtn);
   taskButtons.append(taskRemoveBtn);
   taskDiv.append(taskButtons);
   tasksList.append(taskDiv);
 
-  tasks.push(taskData);
-  updateLocalStorage(tasks, KEYS.task.localStorageKey);
+  tasksContainer.push(task);
+  updateLocalStorage(tasksContainer, KEYS.task.localStorageKey);
 }
 
 form.addEventListener("submit", addTask);
+
 getDataFromLocalStorage(KEYS.task.localStorageKey).forEach((task) =>
   addTask(task)
 );

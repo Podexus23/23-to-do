@@ -61,3 +61,14 @@ body {
   display: flex;
   align-items: center;
 }
+
+.daily-info-weather {
+  display: flex;
+  padding: 0 0.5rem;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.tasks-list_task-text {
+  text-align: center;
+}

@@ -1,10 +1,3 @@
-/*
-coord = {
-  lat: 22.2222,
-  long: 33.333,
-  city: undefined (if not found)
-}
-*/
 //!add weather update time to todoshka  (later)
 //!add localstorage keys onload? maybe
 export const localCacheData = {
