@@ -27,6 +27,7 @@ function editTask(e) {
   const taskText = task.querySelector(".tasks-list_task-text");
   const textArea = makeElem("textarea", "edit-elem");
   const editSaveBtn = makeElem("button", "edit-save-btn");
+  textArea.value = taskText.textContent;
   editSaveBtn.textContent = "save";
 
   function onEditSave() {
