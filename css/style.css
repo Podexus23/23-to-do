@@ -56,3 +56,8 @@ body {
 .tasks-list_task-text {
   max-width: 80%;
 }
+
+.main-daily-info {
+  display: flex;
+  align-items: center;
+}

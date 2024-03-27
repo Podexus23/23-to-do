@@ -80,6 +80,7 @@ form.addEventListener("submit", addTask);
 getDataFromLocalStorage(KEYS.task.localStorageKey).forEach((task) =>
   addTask(task)
 );
+
 if (getDataFromLocalStorage("todoCoords"))
   updateLocalCacheData("coords", ...getDataFromLocalStorage("todoCoords"));
 
