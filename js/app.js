@@ -57,8 +57,6 @@ function addTask(e) {
   };
   if (e.target) e.target[0].value = "";
 
-  console.log(task);
-
   const taskTime = makeElem("div", "tasks-list_time");
   taskTime.textContent = `${getHoursAndMinutes(task.time)}`;
 

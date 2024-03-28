@@ -6,6 +6,76 @@ import {
   updateLocalStorage,
 } from "./localStorage.js";
 
+const weatherIcons = (number = 1) => {
+  let svgURL = `./assets/weatherIcons/static/`;
+  switch (number) {
+    case 1:
+    case 2:
+    case 30:
+      svgURL += "day.svg";
+      break;
+    case 3:
+    case 4:
+    case 5:
+      svgURL += "cloudy-day-1.svg";
+      break;
+    case 6:
+    case 7:
+    case 8:
+    case 11:
+    case 32:
+      svgURL += "cloudy.svg";
+      break;
+    case 12:
+    case 15:
+    case 18:
+      svgURL += "rainy-6.svg";
+      break;
+    case 13:
+    case 14:
+    case 16:
+    case 17:
+      svgURL += "rainy-3.svg";
+      break;
+    case 19:
+    case 20:
+    case 21:
+      svgURL += "cloudy-day-3.svg";
+      break;
+    case 22:
+    case 23:
+    case 24:
+    case 31:
+    case 42:
+      svgURL += "snowy-4.svg";
+      break;
+    case 25:
+    case 26:
+    case 29:
+      svgURL += "rainy-7.svg";
+      break;
+    case 33:
+    case 34:
+      svgURL += "night.svg";
+      break;
+    case 35:
+    case 36:
+    case 37:
+    case 38:
+      svgURL += "cloudy-night-1.svg";
+      break;
+    case 39:
+    case 40:
+    case 41:
+      svgURL += "cloudy-night-3.svg";
+      break;
+    default:
+      svgURL += "day.svg";
+      break;
+  }
+  return svgURL;
+};
+
 //!fake objects for testing
 let cityObjData = {
   Key: "11123",
@@ -36,11 +106,8 @@ const renderWeatherData = (data) => {
   temperature.textContent = `${data.Temperature.Metric.Value}${data.Temperature.Metric.Unit}`;
   const description = document.createElement("span");
   description.textContent = `${data.WeatherText}`;
-  // const image = document.createElement("img");
-  // image.alt = `icon n.${data.WeatherIcon}`;
-  //!add emojis by given code number
-  const image = document.createElement("span");
-  image.innerHTML = `⛅${data.WeatherIcon}`;
+  const image = document.createElement("img");
+  image.src = weatherIcons(data.WeatherIcon);
   return [temperature, description, image];
 };
 
@@ -79,9 +146,9 @@ const addBlockWithNavigationCoords = async (URL, lat, lon) => {
   ) {
     weatherBlock.append(...renderWeatherData(cachedWeatherData.data[0]));
   } else {
-    // const realWeatherData = await fetchWeatherData(placeJson.Key);
     //!fake weather data
     const realWeatherData = fakeWeatherData;
+    // const realWeatherData = await fetchWeatherData(placeJson.Key);
     weatherBlock.append(...renderWeatherData(realWeatherData[0]));
     updateLocalStorage(
       { time: Date.now(), data: realWeatherData },
