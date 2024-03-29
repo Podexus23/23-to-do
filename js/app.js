@@ -3,6 +3,7 @@ import { addTimeOnPage, getHoursAndMinutes } from "./date.js";
 import { makeElem } from "./helpers.js";
 import {
   getDataFromLocalStorage,
+  localCacheData,
   updateLocalCacheData,
   updateLocalStorage,
 } from "./localStorage.js";
@@ -91,8 +92,9 @@ getDataFromLocalStorage(KEYS.task.localStorageKey).forEach((task) =>
   addTask(task)
 );
 
-if (getDataFromLocalStorage("todoCoords"))
-  updateLocalCacheData("coords", ...getDataFromLocalStorage("todoCoords"));
+if (getDataFromLocalStorage(KEYS.task.coordsData)) {
+  updateLocalCacheData("coords", getDataFromLocalStorage(KEYS.task.coordsData));
+}
 
 addTimeOnPage();
 getWeather();

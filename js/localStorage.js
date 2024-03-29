@@ -1,4 +1,3 @@
-//!add weather update time to todoshka  (later)
 //!add localstorage keys onload? maybe
 export const localCacheData = {
   coords: [],
@@ -9,14 +8,16 @@ export function updateLocalCacheData(key, data) {
     console.log(`Sorry, no key: ${key} or no data: ${data}`);
     return;
   }
-  if (key === "coords") localCacheData[key].push(data);
-  else localCacheData[key] = data;
+  if (key === "coords") {
+    if (Array.isArray(data)) localCacheData[key].push(...data);
+    else localCacheData[key].push(data);
+  } else localCacheData[key] = data;
   console.log("local storage keys are up to date");
 }
 
 export function getDataFromLocalStorage(key) {
   const data = localStorage.getItem(key);
-  // console.log("data from local storage", data);
+  console.log(data);
   return JSON.parse(data);
 }
 

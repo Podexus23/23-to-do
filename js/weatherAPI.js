@@ -174,6 +174,7 @@ const getKeyByPlaceName = async (placeName) => {
         Key: locKeyData[0].Key,
         name: locKeyData[0].EnglishName,
       });
+      console.log(localCacheData);
       updateLocalStorage(localCacheData.coords, KEYS.task.coordsData);
 
       // const realWeatherData = fakeWeatherData;
