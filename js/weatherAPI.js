@@ -120,20 +120,18 @@ const searchForCodeInLocalStorage = (cityName) => {
 };
 
 const addBlockWithNavigationCoords = async (URL, lat, lon) => {
-  //!faking placeJson
+  //!fake placeJson
   const placeJson = cityObjData;
   // const getWeatherData = await fetch(URL);
   // const placeJson = await getWeatherData.json();
 
   // save or update all coords
-  const localCoords = getDataFromLocalStorage(KEYS.task.coordsData);
+  const localCityKeys = getDataFromLocalStorage(KEYS.task.coordsData);
 
-  if (!localCoords || !searchForCodeInLocalStorage(placeJson.EnglishName)) {
+  if (!localCityKeys || !searchForCodeInLocalStorage(placeJson.EnglishName)) {
     updateLocalCacheData("coords", {
       Key: placeJson.Key,
       name: placeJson.EnglishName,
-      lat,
-      lon,
     });
     updateLocalStorage(localCacheData.coords, KEYS.task.coordsData);
   }
@@ -155,6 +153,84 @@ const addBlockWithNavigationCoords = async (URL, lat, lon) => {
       KEYS.task.weatherTime
     );
   }
+};
+
+const getKeyByPlaceName = async (placeName) => {
+  const localCityKeys = getDataFromLocalStorage(KEYS.task.coordsData);
+
+  if (!localCityKeys || !searchForCodeInLocalStorage(placeName)) {
+    const locationKeyUrl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${KEYS.weather.accu}&q=${placeName}`;
+    const getLocKey = await fetch(locationKeyUrl, { method: "GET" });
+    const locKeyData = await getLocKey.json();
+    console.log(locKeyData);
+
+    if (locKeyData.length === 0) {
+      const text = document.querySelector(".info-weather-heading");
+      text.textContent =
+        "Sorry, there is no data about this place, try smth different";
+      return;
+    } else {
+      updateLocalCacheData("coords", {
+        Key: locKeyData[0].Key,
+        name: locKeyData[0].EnglishName,
+      });
+      updateLocalStorage(localCacheData.coords, KEYS.task.coordsData);
+
+      // const realWeatherData = fakeWeatherData;
+      const realWeatherData = await fetchWeatherData(
+        searchForCodeInLocalStorage(placeName).Key
+      );
+      weatherBlock.append(...renderWeatherData(realWeatherData[0]));
+      updateLocalStorage(
+        { time: Date.now(), data: realWeatherData },
+        KEYS.task.weatherTime
+      );
+    }
+  } else {
+    const realWeatherData = await fetchWeatherData(
+      searchForCodeInLocalStorage(placeName).Key
+    );
+    weatherBlock.innerHTML = "";
+    weatherBlock.append(...renderWeatherData(realWeatherData[0]));
+    updateLocalStorage(
+      { time: Date.now(), data: realWeatherData },
+      KEYS.task.weatherTime
+    );
+  }
+};
+
+let addCityQuestionPlaceholder = () => {
+  const text = document.createElement("p");
+  text.textContent = "enter your city or place name to add weather on page";
+  text.className = "info-weather-heading";
+  text.classList.add("small-text");
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.classList.add("info-weather-input");
+
+  const button = document.createElement("button");
+  button.classList.add("info-weather-button");
+  button.classList.add("button");
+  button.textContent = "Add";
+
+  button.addEventListener("click", (e) => {
+    const placeName = input.value.trim();
+    getKeyByPlaceName(placeName);
+  });
+
+  weatherBlock.append(text);
+  weatherBlock.append(input);
+  weatherBlock.append(button);
+};
+
+let addWeatherByCityName = () => {
+  addCityQuestionPlaceholder();
+  // get place data
+
+  // render error on wrong data
+  // render data
+  console.log("hi");
 };
 
 //only by coords now
@@ -189,7 +265,8 @@ export async function getWeather() {
     }
   } catch (err) {
     //!add functionality by adding weather for city name
-    weatherBlock.innerHTML = `<p>Sorry, no cords - no weather</p>`;
+    if (err.code === 1) addWeatherByCityName();
+    // weatherBlock.innerHTML = `<p>Sorry, no cords - no weather</p>`;
     console.warn(`ERROR(${err.code}): ${err.message}`);
   }
   //!if not, give a chance to take data from city name(later)

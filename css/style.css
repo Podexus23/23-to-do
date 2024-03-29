@@ -60,15 +60,24 @@ body {
 .main-daily-info {
   display: flex;
   align-items: center;
+  justify-content: end;
 }
 
 .daily-info-weather {
   display: flex;
+  flex-direction: column;
   padding: 0 0.5rem;
   gap: 0.3rem;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 50%;
 }
 
 .tasks-list_task-text {
   text-align: center;
+}
+
+.small-text {
+  font-size: 0.8rem;
 }
