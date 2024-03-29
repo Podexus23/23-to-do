@@ -17,7 +17,6 @@ export function updateLocalCacheData(key, data) {
 
 export function getDataFromLocalStorage(key) {
   const data = localStorage.getItem(key);
-  console.log(data);
   return JSON.parse(data);
 }
 
