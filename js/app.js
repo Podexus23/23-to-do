@@ -1,3 +1,6 @@
+import "../css/style.css";
+import "../css/test.css";
+
 import { KEYS } from "../keys.js";
 import { addTimeOnPage, getHoursAndMinutes } from "./date.js";
 import { makeElem } from "./helpers.js";
