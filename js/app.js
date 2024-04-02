@@ -1,5 +1,6 @@
 import "../css/style.css";
 import "../css/test.css";
+import "../css/test.scss";
 
 import { KEYS } from "../keys.js";
 import { addTimeOnPage, getHoursAndMinutes } from "./date.js";
